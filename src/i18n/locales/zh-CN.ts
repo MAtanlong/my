@@ -59,6 +59,7 @@ export default {
   login: {
     title: '权限管理系统',
     subtitle: '统一身份认证平台',
+    usernameLogin: '用户名登录',
     accountLogin: '账号登录',
     phoneLogin: '手机登录',
     qrLogin: '扫码登录',
@@ -68,11 +69,20 @@ export default {
     phone: '手机号',
     captcha: '验证码',
     smsCode: '短信验证码',
+    usernamePlaceholder: '请输入用户名',
+    passwordPlaceholder: '请输入密码',
+    phonePlaceholder: '请输入手机号',
+    captchaPlaceholder: '请输入验证码',
+    smsCodePlaceholder: '请输入短信验证码',
     rememberMe: '记住登录状态',
     forgotPassword: '忘记密码？',
+    login: '登录',
     loginButton: '登录',
+    loggingIn: '登录中...',
+    getSmsCode: '获取验证码',
     sendSms: '发送验证码',
     resendSms: '重新发送({count}s)',
+    otherLoginMethods: '其他登录方式',
     loginSuccess: '登录成功',
     usernameRequired: '请输入用户名',
     passwordRequired: '请输入密码',
@@ -80,7 +90,29 @@ export default {
     captchaRequired: '请输入验证码',
     smsCodeRequired: '请输入短信验证码',
     phoneFormat: '请输入正确的手机号格式',
-    refreshCaptcha: '点击刷新验证码'
+    refreshCaptcha: '点击刷新验证码',
+    validation: {
+      usernameRequired: '请输入用户名',
+      usernameLength: '用户名长度在 3 到 20 个字符',
+      passwordRequired: '请输入密码',
+      passwordLength: '密码长度在 6 到 20 个字符',
+      captchaRequired: '请输入验证码',
+      captchaLength: '验证码长度为 4 位',
+      phoneRequired: '请输入手机号',
+      phoneFormat: '请输入正确的手机号格式',
+      smsCodeRequired: '请输入短信验证码',
+      smsCodeLength: '短信验证码长度为 6 位'
+    },
+    messages: {
+      loginSuccess: '登录成功',
+      captchaError: '验证码错误',
+      enterPhoneFirst: '请先输入手机号',
+      smsCodeSent: '短信验证码已发送',
+      smsCodeSendFailed: '短信验证码发送失败',
+      contactAdmin: '请联系管理员重置密码',
+      qrLoginDeveloping: '二维码登录功能开发中',
+      wechatLoginDeveloping: '微信登录功能开发中'
+    }
   },
 
   // 角色管理
@@ -152,7 +184,21 @@ export default {
   // 用户管理
   user: {
     title: '用户管理',
-    subtitle: '管理系统用户信息和权限设置',
+    description: '管理系统用户信息和权限设置',
+    export: '导出用户',
+    add: '新增用户',
+    view: '查看',
+    edit: '编辑',
+    assignRole: '分配角色',
+    username: '用户名',
+    lastLoginTime: '最后登录时间',
+    createTime: '创建时间',
+    phonePlaceholder: '请输入手机号',
+    passwordPlaceholder: '请输入密码',
+    confirmPasswordPlaceholder: '请确认密码',
+    department: '部门',
+    userInfo: '用户信息：{realName}（{username}）',
+    selectRoleTip: '请选择要分配的角色',
     form: {
       username: '用户名',
       realName: '真实姓名',
@@ -955,5 +1001,5 @@ export default {
       uptime: '运行时间',
       lastCheck: '最后检查'
     }
-  }
+  },
 }

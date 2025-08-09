@@ -1,10 +1,10 @@
 # TODO:
 
-- [x] analyze-systemsettings-i18n: 分析SystemSettingsPage.vue中的硬编码中文文本并列出需要国际化的内容 (priority: High)
-- [x] analyze-dashboard-i18n: 分析DashboardPage.vue中的硬编码中文文本并列出需要国际化的内容 (priority: High)
-- [x] add-systemsettings-translations: 在zh-CN.ts和en-US.ts中添加SystemSettingsPage所需的翻译键值 (priority: High)
-- [x] add-dashboard-translations: 在zh-CN.ts和en-US.ts中添加DashboardPage所需的翻译键值 (priority: High)
-- [ ] fix-systemsettings-hardcoded-text: 修复SystemSettingsPage.vue中的硬编码中文文本，替换为t()函数调用 (**IN PROGRESS**) (priority: High)
-- [ ] fix-dashboard-hardcoded-text: 修复DashboardPage.vue中的硬编码中文文本，替换为t()函数调用 (priority: High)
-- [ ] check-other-files-i18n: 检查其他Vue文件是否还有国际化问题 (priority: Medium)
-- [ ] test-i18n-functionality: 测试修复后的国际化功能是否正常工作 (priority: Medium)
+- [x] opt001: 删除重复的JWT工具类（保留JwtUtils，删除JwtUtil） (priority: High)
+- [x] opt002: 完善网关服务的JWT认证过滤器 (priority: High)
+- [x] opt008: 确保所有API接口都有适当的权限控制注解 (priority: High)
+- [x] opt003: 检查并完善所有服务的异常处理 (priority: Medium)
+- [x] opt004: 优化数据库连接配置 (priority: Medium)
+- [x] opt005: 添加健康检查端点 (priority: Medium)
+- [x] opt006: 完善Swagger文档配置 (priority: Low)
+- [x] opt007: 检查并优化缓存配置 (priority: Low)
