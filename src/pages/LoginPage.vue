@@ -269,7 +269,6 @@ const sendSmsCode = async () => {
     ElMessage.error(error.message || t('login.messages.smsCodeSendFailed'))
   }
 }
-
 // 处理登录
 const handleLogin = async () => {
   const formRef = loginType.value === 'username' ? usernameFormRef.value : phoneFormRef.value
