@@ -58,4 +58,76 @@ public class SystemConfigDTO {
      */
     private LocalDateTime updatedAt;
     
+    // Getter and Setter methods
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public String getConfigName() {
+        return configName;
+    }
+    
+    public void setConfigName(String configName) {
+        this.configName = configName;
+    }
+    
+    public String getConfigKey() {
+        return configKey;
+    }
+    
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
+    }
+    
+    public String getConfigValue() {
+        return configValue;
+    }
+    
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue;
+    }
+    
+    public Integer getConfigType() {
+        return configType;
+    }
+    
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
+    }
+    
+    public Integer getStatus() {
+        return status;
+    }
+    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    public String getRemark() {
+        return remark;
+    }
+    
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

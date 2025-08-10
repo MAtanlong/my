@@ -39,12 +39,7 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
         
-        <!-- Common Module -->
-        <dependency>
-            <groupId>com.permission</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+        <!-- Common Module - Excluded due to Web dependency conflicts with Gateway -->
         
         <!-- Redis -->
         <dependency>
@@ -56,6 +51,12 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+        </dependency>
+        
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
     

@@ -158,8 +158,9 @@ import {
   SwitchButton,
   Operation
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { switchLanguage, getCurrentLocale } from '@/i18n'
+import { authApi } from '@/api/auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -242,9 +243,36 @@ const handleUserCommand = (command: string) => {
 }
 
 // 处理退出登录
-const handleLogout = () => {
-  ElMessage.success('退出登录成功')
-  router.push('/login')
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要退出登录吗？',
+      '退出确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    
+    // 调用退出登录API
+    try {
+      await authApi.logout()
+    } catch (error) {
+      console.warn('调用退出登录API失败:', error)
+    }
+    
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('userInfo')
+    localStorage.removeItem('rememberMe')
+    
+    ElMessage.success('退出登录成功')
+    router.push('/login')
+  } catch {
+    // 用户取消退出
+  }
 }
 </script>
 

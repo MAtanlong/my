@@ -35,7 +35,8 @@ export default {
     normal: '正常',
     cancelled: '已取消',
     featureInDevelopment: '功能开发中',
-    logout: '退出登录'
+    logout: '退出登录',
+    allRightsReserved: '版权所有'
   },
 
   // 导航菜单

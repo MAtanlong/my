@@ -1,6 +1,8 @@
 package com.permission.system.service;
 
+import com.permission.common.result.PageResult;
 import com.permission.system.dto.DictDataDTO;
+import com.permission.system.dto.DictDataQueryDTO;
 
 import java.util.List;
 
@@ -103,5 +105,13 @@ public interface DictDataService {
      * @return 字典标签
      */
     String getDictLabel(String dictType, String dictValue);
+    
+    /**
+     * 分页查询字典数据
+     *
+     * @param queryDTO 查询条件
+     * @return 分页结果
+     */
+    PageResult<DictDataDTO> getDictDataPage(DictDataQueryDTO queryDTO);
     
 }

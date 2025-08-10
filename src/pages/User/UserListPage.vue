@@ -339,6 +339,9 @@ import {
   Setting,
   Key
 } from '@element-plus/icons-vue'
+import * as userApi from '@/api/user'
+import * as roleApi from '@/api/role'
+import * as departmentApi from '@/api/department'
 
 const { t } = useI18n()
 
@@ -423,80 +426,33 @@ const userFormRules: FormRules = {
 }
 
 // 用户列表数据
-const userList = ref([
-  {
-    id: 1,
-    username: 'admin',
-    realName: '系统管理员',
-    phone: '13800138000',
-    email: 'admin@example.com',
-    avatar: '',
-    gender: 1,
-    status: 1,
-    departmentId: 1,
-    roles: [
-      { id: 1, name: '超级管理员', code: 'SUPER_ADMIN' }
-    ],
-    lastLoginTime: '2024-01-15 10:30:00',
-    createTime: '2024-01-01 00:00:00',
-    remark: '系统默认管理员'
-  },
-  {
-    id: 2,
-    username: 'zhangsan',
-    realName: '张三',
-    phone: '13800138001',
-    email: 'zhangsan@example.com',
-    avatar: '',
-    gender: 1,
-    status: 1,
-    departmentId: 2,
-    roles: [
-      { id: 2, name: '普通用户', code: 'USER' }
-    ],
-    lastLoginTime: '2024-01-15 09:15:00',
-    createTime: '2024-01-02 10:00:00',
-    remark: '普通用户'
-  },
-  {
-    id: 3,
-    username: 'lisi',
-    realName: '李四',
-    phone: '13800138002',
-    email: 'lisi@example.com',
-    avatar: '',
-    gender: 2,
-    status: 0,
-    departmentId: 3,
-    roles: [
-      { id: 3, name: '部门管理员', code: 'DEPT_ADMIN' }
-    ],
-    lastLoginTime: '2024-01-14 16:45:00',
-    createTime: '2024-01-03 14:30:00',
-    remark: '部门管理员'
-  }
-])
+const userList = ref([])
 
 // 角色选项
-const roleOptions = ref([
-  { id: 1, name: '超级管理员', code: 'SUPER_ADMIN' },
-  { id: 2, name: '普通用户', code: 'USER' },
-  { id: 3, name: '部门管理员', code: 'DEPT_ADMIN' },
-  { id: 4, name: '审核员', code: 'AUDITOR' }
-])
+const roleOptions = ref([])
 
 // 部门选项
-const departmentOptions = ref([
-  {
-    id: 1,
-    name: '总公司',
-    children: [
-      { id: 2, name: '技术部' },
-      { id: 3, name: '市场部' },
-      { id: 4, name: '人事部' }
-    ]
+const departmentOptions = ref([])
+
+// 加载角色选项
+const loadRoleOptions = async () => {
+  try {
+    const response = await roleApi.getAllRoles()
+    roleOptions.value = response.data
+  } catch (error) {
+    console.error('加载角色选项失败:', error)
   }
-])
+}
+
+// 加载部门选项
+const loadDepartmentOptions = async () => {
+  try {
+    const response = await departmentApi.getDepartmentTree()
+    departmentOptions.value = response.data
+  } catch (error) {
+    console.error('加载部门选项失败:', error)
+  }
+}
 
 // 计算属性
 const dialogTitle = computed(() => {
@@ -518,11 +474,18 @@ const getRoleTagType = (code: string) => {
 const loadUserList = async () => {
   loading.value = true
   try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 500))
-    pagination.total = userList.value.length
-    ElMessage.success(t('user.messages.loadSuccess'))
+    const params = {
+      ...searchForm,
+      page: pagination.current,
+      size: pagination.size
+    }
+    
+    const response = await userApi.getUserList(params)
+    userList.value = response.data.records
+    pagination.total = response.data.total
+    
   } catch (error) {
+    console.error('加载用户列表失败:', error)
     ElMessage.error(t('user.messages.loadFailed'))
   } finally {
     loading.value = false
@@ -573,15 +536,16 @@ const handleDelete = async (row: any) => {
       }
     )
     
-    // 模拟删除操作
-    const index = userList.value.findIndex(user => user.id === row.id)
-    if (index > -1) {
-      userList.value.splice(index, 1)
-      pagination.total--
-      ElMessage.success(t('common.deleteSuccess'))
+    await userApi.deleteUser(row.id)
+    ElMessage.success(t('common.deleteSuccess'))
+    loadUserList() // 重新加载列表
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除用户失败:', error)
+      ElMessage.error(t('user.messages.deleteFailed'))
+    } else {
+      ElMessage.info(t('common.deleteCanceled'))
     }
-  } catch {
-    ElMessage.info(t('common.deleteCanceled'))
   }
 }
 
@@ -597,25 +561,29 @@ const handleBatchDelete = async () => {
       }
     )
     
-    // 模拟批量删除
     const selectedIds = selectedUsers.value.map(user => user.id)
-    userList.value = userList.value.filter(user => !selectedIds.includes(user.id))
-    pagination.total -= selectedUsers.value.length
-     selectedUsers.value = []
+    await userApi.batchDeleteUsers(selectedIds)
+    selectedUsers.value = []
     ElMessage.success(t('common.batchDeleteSuccess'))
-  } catch {
-    ElMessage.info(t('common.deleteCanceled'))
+    loadUserList() // 重新加载列表
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('批量删除用户失败:', error)
+      ElMessage.error(t('user.messages.batchDeleteFailed'))
+    } else {
+      ElMessage.info(t('common.deleteCanceled'))
+    }
   }
 }
 
 const handleStatusChange = async (row: any) => {
   try {
-    // 模拟状态更新
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await userApi.updateUserStatus(row.id, row.status)
     ElMessage.success(t('user.messages.statusChanged', { status: row.status ? t('common.enabled') : t('common.disabled') }))
   } catch (error) {
     // 恢复原状态
     row.status = row.status ? 0 : 1
+    console.error('更新用户状态失败:', error)
     ElMessage.error(t('user.messages.statusChangeFailed'))
   }
 }
@@ -664,35 +632,22 @@ const handleSubmit = async () => {
     await userFormRef.value.validate()
     submitLoading.value = true
     
-    // 模拟提交
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
     if (isEdit.value) {
       // 更新用户
-      const index = userList.value.findIndex(user => user.id === userForm.id)
-      if (index > -1) {
-        Object.assign(userList.value[index], userForm)
-      }
+      await userApi.updateUser(userForm.id, userForm)
       ElMessage.success(t('user.messages.updateSuccess'))
     } else {
       // 新增用户
-      const newUser = {
-        ...userForm,
-        id: Date.now(),
-        avatar: '',
-        roles: [],
-        lastLoginTime: '',
-        createTime: new Date().toLocaleString()
-      }
-      userList.value.unshift(newUser)
-      pagination.total++
+      await userApi.createUser(userForm)
       ElMessage.success(t('user.messages.createSuccess'))
     }
     
     dialogVisible.value = false
     resetUserForm()
+    loadUserList() // 重新加载列表
   } catch (error) {
-    console.error('表单验证失败:', error)
+    console.error('提交失败:', error)
+    ElMessage.error(isEdit.value ? t('user.messages.updateFailed') : t('user.messages.createFailed'))
   } finally {
     submitLoading.value = false
   }
@@ -704,18 +659,14 @@ const handleRoleSubmit = async () => {
   try {
     roleSubmitLoading.value = true
     
-    // 模拟角色分配
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    // 更新用户角色
-    const user = userList.value.find(u => u.id === currentUser.value.id)
-    if (user) {
-      user.roles = roleOptions.value.filter(role => selectedRoleIds.value.includes(role.id))
-    }
+    // 调用API分配角色
+    await roleApi.assignRoleToUser(currentUser.value.id, selectedRoleIds.value)
     
     ElMessage.success(t('user.messages.roleAssignSuccess'))
     roleDialogVisible.value = false
+    loadUserList() // 重新加载列表以更新角色信息
   } catch (error) {
+    console.error('分配角色失败:', error)
     ElMessage.error(t('user.messages.roleAssignFailed'))
   } finally {
     roleSubmitLoading.value = false
@@ -729,6 +680,8 @@ const exportUsers = () => {
 // 组件挂载时加载数据
 onMounted(() => {
   loadUserList()
+  loadRoleOptions()
+  loadDepartmentOptions()
 })
 </script>
 

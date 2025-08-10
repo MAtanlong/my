@@ -55,21 +55,22 @@ public class SecurityConfig {
     }
     
     /**
-     * CORS配置
+     * CORS配置 - 已移至网关层统一处理
+     * 避免与网关CORS配置冲突导致Access-Control-Allow-Origin头重复
      */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+    //     CorsConfiguration configuration = new CorsConfiguration();
+    //     configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+    //     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    //     configuration.setAllowedHeaders(Arrays.asList("*"));
+    //     configuration.setAllowCredentials(true);
+    //     configuration.setMaxAge(3600L);
+    //     
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", configuration);
+    //     return source;
+    // }
     
     /**
      * 安全过滤器链
@@ -79,8 +80,8 @@ public class SecurityConfig {
         http
                 // 禁用CSRF
                 .csrf().disable()
-                // 启用CORS
-                .cors().configurationSource(corsConfigurationSource())
+                // CORS已在网关层统一处理，此处禁用避免冲突
+                .cors().disable()
                 .and()
                 // 配置异常处理
                 .exceptionHandling()
@@ -91,24 +92,22 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // 配置请求授权
-                .authorizeHttpRequests(authz -> authz
+                .authorizeRequests()
                         // 允许访问的路径
-                        .requestMatchers(
-                                "/auth/login",
-                                "/auth/register",
-                                "/auth/refresh",
-                                "/actuator/**",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**",
-                                "/webjars/**",
-                                "/doc.html",
-                                "/favicon.ico",
-                                "/error"
-                        ).permitAll()
+                        .antMatchers("/auth/login").permitAll()
+                        .antMatchers("/auth/register").permitAll()
+                        .antMatchers("/auth/refresh").permitAll()
+                        .antMatchers("/actuator/**").permitAll()
+                        .antMatchers("/swagger-ui/**").permitAll()
+                        .antMatchers("/swagger-resources/**").permitAll()
+                        .antMatchers("/v3/api-docs/**").permitAll()
+                        .antMatchers("/webjars/**").permitAll()
+                        .antMatchers("/doc.html").permitAll()
+                        .antMatchers("/favicon.ico").permitAll()
+                        .antMatchers("/error").permitAll()
                         // 其他请求需要认证
                         .anyRequest().authenticated()
-                );
+                .and();
         
         // 添加JWT过滤器
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

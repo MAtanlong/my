@@ -1,0 +1,9 @@
+com\permission\menu\entity\Menu.class
+com\permission\menu\dto\MenuDTO.class
+com\permission\menu\controller\MenuController.class
+com\permission\menu\mapper\MenuMapper.class
+com\permission\menu\MenuServiceApplication.class
+com\permission\menu\dto\MenuQueryDTO.class
+com\permission\menu\dto\MenuCreateDTO.class
+com\permission\menu\service\MenuService.class
+com\permission\menu\service\impl\MenuServiceImpl.class

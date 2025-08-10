@@ -1,9 +1,9 @@
 package com.permission.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.permission.common.result.Result;
-import com.permission.common.result.ResultCode;
-import com.permission.common.utils.JwtUtils;
+import com.permission.gateway.common.Result;
+import com.permission.gateway.common.ResultCode;
+import com.permission.gateway.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -68,12 +68,12 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                 }
                 
                 // 获取用户信息
-                String userId = jwtUtils.getUserIdFromToken(token);
+                Long userId = jwtUtils.getUserIdFromToken(token);
                 String username = jwtUtils.getUsernameFromToken(token);
                 
                 // 将用户信息添加到请求头中
                 ServerHttpRequest mutatedRequest = request.mutate()
-                        .header("X-User-Id", userId)
+                        .header("X-User-Id", String.valueOf(userId))
                         .header("X-Username", username)
                         .build();
                 
@@ -111,7 +111,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         
-        Result<Void> result = Result.error(ResultCode.UNAUTHORIZED.getCode(), message);
+        Result<Void> result = Result.error(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getMessage());
         String body = JSON.toJSONString(result);
         DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         

@@ -36,4 +36,44 @@ public class SystemConfigQueryDTO {
      */
     private Integer size = 10;
     
+    // Getter and Setter methods
+    public String getKeyword() {
+        return keyword;
+    }
+    
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+    
+    public Integer getConfigType() {
+        return configType;
+    }
+    
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
+    }
+    
+    public Integer getStatus() {
+        return status;
+    }
+    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    public Integer getPage() {
+        return page;
+    }
+    
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+    
+    public Integer getSize() {
+        return size;
+    }
+    
+    public void setSize(Integer size) {
+        this.size = size;
+    }
 }

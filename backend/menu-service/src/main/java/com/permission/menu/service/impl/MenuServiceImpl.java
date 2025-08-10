@@ -42,7 +42,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDTO getMenuById(Long menuId) {
         if (menuId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "菜单ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "菜单ID不能为空");
         }
         
         Menu menu = menuMapper.selectById(menuId);
@@ -78,11 +78,11 @@ public class MenuServiceImpl implements MenuService {
         if (menu.getParentId() == null) {
             menu.setParentId(0L);
         }
-        if (menu.getVisible() == null) {
-            menu.setVisible(1);
+        if (menu.getIsVisible() == null) {
+            menu.setIsVisible(1);
         }
-        if (menu.getKeepAlive() == null) {
-            menu.setKeepAlive(0);
+        if (menu.getIsCache() == null) {
+            menu.setIsCache(0);
         }
         menu.setCreatedAt(LocalDateTime.now());
         menu.setUpdatedAt(LocalDateTime.now());
@@ -96,7 +96,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateMenu(Long menuId, MenuCreateDTO createDTO) {
         if (menuId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "菜单ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "菜单ID不能为空");
         }
         
         // 检查菜单是否存在
@@ -113,7 +113,7 @@ public class MenuServiceImpl implements MenuService {
         // 如果有父级菜单，检查父级菜单是否存在且不能是自己
         if (createDTO.getParentId() != null && createDTO.getParentId() > 0) {
             if (createDTO.getParentId().equals(menuId)) {
-                throw new BusinessException(ResultCode.PARAM_ERROR, "父级菜单不能是自己");
+                throw new BusinessException(ResultCode.VALIDATE_FAILED, "父级菜单不能是自己");
             }
             Menu parentMenu = menuMapper.selectById(createDTO.getParentId());
             if (parentMenu == null) {
@@ -128,11 +128,11 @@ public class MenuServiceImpl implements MenuService {
         if (menu.getParentId() == null) {
             menu.setParentId(0L);
         }
-        if (menu.getVisible() == null) {
-            menu.setVisible(1);
+        if (menu.getIsVisible() == null) {
+            menu.setIsVisible(1);
         }
-        if (menu.getKeepAlive() == null) {
-            menu.setKeepAlive(0);
+        if (menu.getIsCache() == null) {
+            menu.setIsCache(0);
         }
         menu.setUpdatedAt(LocalDateTime.now());
         
@@ -143,7 +143,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteMenu(Long menuId) {
         if (menuId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "菜单ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "菜单ID不能为空");
         }
         
         // 检查菜单是否存在
@@ -165,11 +165,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Boolean changeMenuStatus(Long menuId, Integer status) {
         if (menuId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "菜单ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "菜单ID不能为空");
         }
         
         if (status == null || (status != 0 && status != 1)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "状态值无效");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "状态值无效");
         }
         
         // 检查菜单是否存在
@@ -196,7 +196,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuDTO> getMenuTreeByUserId(Long userId) {
         if (userId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "用户ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "用户ID不能为空");
         }
         
         List<MenuDTO> allMenus = menuMapper.selectMenusByUserId(userId);
@@ -206,7 +206,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuDTO> getMenusByRoleId(Long roleId) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         return menuMapper.selectMenusByRoleId(roleId);
@@ -220,7 +220,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<String> getPermissionsByUserId(Long userId) {
         if (userId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "用户ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "用户ID不能为空");
         }
         
         return menuMapper.selectPermissionsByUserId(userId);

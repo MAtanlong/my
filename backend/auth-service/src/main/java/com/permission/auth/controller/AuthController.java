@@ -4,8 +4,8 @@ import com.permission.auth.dto.LoginRequest;
 import com.permission.auth.dto.LoginResponse;
 import com.permission.auth.service.AuthService;
 import com.permission.common.result.Result;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+// import io.swagger.v3.oas.annotations.Operation;
+// import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +23,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "认证管理", description = "用户登录、登出、刷新令牌等认证相关接口")
+// @Tag(name = "认证管理", description = "用户登录、登出、刷新令牌等认证相关接口")
 @Validated
 public class AuthController {
     
@@ -34,7 +34,7 @@ public class AuthController {
      * 用户登录
      */
     @PostMapping("/login")
-    @Operation(summary = "用户登录", description = "用户名密码登录，返回JWT令牌")
+    // @Operation(summary = "用户登录", description = "用户名密码登录，返回JWT令牌")
     public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         log.info("用户登录：{}", request.getUsername());
         
@@ -48,7 +48,7 @@ public class AuthController {
      * 用户登出
      */
     @PostMapping("/logout")
-    @Operation(summary = "用户登出", description = "用户登出，清除令牌")
+    // @Operation(summary = "用户登出", description = "用户登出，清除令牌")
     public Result<String> logout(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         if (token != null) {
@@ -61,7 +61,7 @@ public class AuthController {
      * 刷新令牌
      */
     @PostMapping("/refresh")
-    @Operation(summary = "刷新令牌", description = "使用刷新令牌获取新的访问令牌")
+    // @Operation(summary = "刷新令牌", description = "使用刷新令牌获取新的访问令牌")
     public Result<LoginResponse> refresh(@RequestParam String refreshToken) {
         LoginResponse response = authService.refreshToken(refreshToken);
         return Result.success(response, "令牌刷新成功");
@@ -71,7 +71,7 @@ public class AuthController {
      * 获取当前用户信息
      */
     @GetMapping("/userinfo")
-    @Operation(summary = "获取当前用户信息", description = "根据JWT令牌获取当前登录用户的详细信息")
+    // @Operation(summary = "获取当前用户信息", description = "根据JWT令牌获取当前登录用户的详细信息")
     public Result<LoginResponse.UserInfo> getUserInfo() {
         LoginResponse.UserInfo userInfo = authService.getCurrentUserInfo();
         return Result.success(userInfo);
@@ -81,7 +81,7 @@ public class AuthController {
      * 验证令牌
      */
     @GetMapping("/validate")
-    @Operation(summary = "验证令牌", description = "验证JWT令牌是否有效")
+    // @Operation(summary = "验证令牌", description = "验证JWT令牌是否有效")
     public Result<Boolean> validateToken(@RequestParam String token) {
         boolean isValid = authService.validateToken(token);
         return Result.success(isValid);

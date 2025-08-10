@@ -15,7 +15,7 @@ import java.util.List;
 public class DictTypeDTO {
     
     /**
-     * 字典类型ID
+     * 主键ID
      */
     private Long id;
     
@@ -30,7 +30,7 @@ public class DictTypeDTO {
     private String dictType;
     
     /**
-     * 状态（0-禁用 1-启用）
+     * 状态：0-禁用，1-启用
      */
     private Integer status;
     
@@ -52,4 +52,70 @@ public class DictTypeDTO {
     /**
      * 更新时间
      */
-    private Local
+    private LocalDateTime updatedAt;
+    
+    // Getter and Setter methods
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public String getDictName() {
+        return dictName;
+    }
+    
+    public void setDictName(String dictName) {
+        this.dictName = dictName;
+    }
+    
+    public String getDictType() {
+        return dictType;
+    }
+    
+    public void setDictType(String dictType) {
+        this.dictType = dictType;
+    }
+    
+    public Integer getStatus() {
+        return status;
+    }
+    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    public String getRemark() {
+        return remark;
+    }
+    
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+    
+    public List<DictDataDTO> getDictDataList() {
+        return dictDataList;
+    }
+    
+    public void setDictDataList(List<DictDataDTO> dictDataList) {
+        this.dictDataList = dictDataList;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+}

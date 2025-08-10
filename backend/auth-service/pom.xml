@@ -83,10 +83,10 @@
         </dependency>
         
         <!-- Swagger -->
-        <dependency>
+        <!-- <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-        </dependency>
+        </dependency> -->
         
         <!-- Lombok -->
         <dependency>

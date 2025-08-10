@@ -1,5 +1,6 @@
 package com.permission.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.permission.system.dto.DictTypeDTO;
 
 import java.util.List;
@@ -18,6 +19,23 @@ public interface DictTypeService {
      * @return 字典类型列表
      */
     List<DictTypeDTO> getDictTypeList();
+    
+    /**
+     * 分页查询字典类型
+     *
+     * @param page 页码
+     * @param size 每页大小
+     * @param keyword 搜索关键词
+     * @return 分页结果
+     */
+    IPage<DictTypeDTO> getDictTypePage(Long page, Long size, String keyword);
+    
+    /**
+     * 查询字典类型列表（包含字典数据）
+     *
+     * @return 字典类型列表
+     */
+    List<DictTypeDTO> getDictTypeListWithData();
     
     /**
      * 根据字典类型ID查询详情

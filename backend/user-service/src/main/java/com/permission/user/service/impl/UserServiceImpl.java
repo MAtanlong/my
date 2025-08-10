@@ -35,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public PageResult<UserDTO> getUserPage(UserQueryDTO query) {
         Page<UserDTO> page = new Page<>(query.getCurrent(), query.getSize());
         IPage<UserDTO> result = baseMapper.selectUserPage(page, query);
-        return PageResult.of(result.getRecords(), result.getTotal(), result.getCurrent(), result.getSize());
+        return PageResult.of(result.getCurrent(), result.getSize(), result.getTotal(), result.getRecords());
     }
     
     @Override
@@ -64,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         BeanUtils.copyProperties(createDTO, user);
         user.setPassword(passwordEncoder.encode(createDTO.getPassword()));
-        user.setStatus("active");
+        user.setStatus(1); // 1-启用
         
         save(user);
         
@@ -72,13 +72,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // assignRoles(user.getId(), createDTO.getRoleIds());
         
         log.info("创建用户成功: {}", user.getUsername());
-        return user.getId();
+        return String.valueOf(user.getId());
     }
     
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUser(String userId, UserDTO userDTO) {
-        User existingUser = getById(userId);
+        User existingUser = getById(Long.valueOf(userId));
         if (existingUser == null) {
             throw new BusinessException(ResultCode.USER_NOT_FOUND);
         }
@@ -86,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 检查邮箱是否被其他用户使用
         if (StringUtils.hasText(userDTO.getEmail()) && !userDTO.getEmail().equals(existingUser.getEmail())) {
             User emailUser = getUserByEmail(userDTO.getEmail());
-            if (emailUser != null && !emailUser.getId().equals(userId)) {
+            if (emailUser != null && !emailUser.getId().equals(Long.valueOf(userId))) {
                 throw new BusinessException(ResultCode.USER_ALREADY_EXISTS, "邮箱已被其他用户使用");
             }
         }
@@ -94,7 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 更新用户信息
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
-        user.setId(userId);
+        user.setId(Long.valueOf(userId));
         user.setUsername(existingUser.getUsername()); // 用户名不允许修改
         user.setPassword(existingUser.getPassword()); // 密码不在此处修改
         
@@ -111,12 +111,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteUser(String userId) {
-        User user = getById(userId);
+        User user = getById(Long.valueOf(userId));
         if (user == null) {
             throw new BusinessException(ResultCode.USER_NOT_FOUND);
         }
         
-        removeById(userId);
+        removeById(Long.valueOf(userId));
         
         // TODO: 删除用户角色关联
         
@@ -126,7 +126,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchDeleteUsers(List<String> userIds) {
-        removeByIds(userIds);
+        List<Long> longUserIds = userIds.stream().map(Long::valueOf).collect(java.util.stream.Collectors.toList());
+        removeByIds(longUserIds);
         
         // TODO: 批量删除用户角色关联
         
@@ -135,12 +136,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Override
     public void updateUserStatus(String userId, String status) {
-        User user = getById(userId);
+        User user = getById(Long.valueOf(userId));
         if (user == null) {
             throw new BusinessException(ResultCode.USER_NOT_FOUND);
         }
         
-        user.setStatus(status);
+        user.setStatus(Integer.valueOf(status));
         updateById(user);
         
         log.info("更新用户状态成功: {} -> {}", user.getUsername(), status);
@@ -148,7 +149,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Override
     public void resetPassword(String userId, String newPassword) {
-        User user = getById(userId);
+        User user = getById(Long.valueOf(userId));
         if (user == null) {
             throw new BusinessException(ResultCode.USER_NOT_FOUND);
         }

@@ -54,4 +54,5 @@ public interface UserRoleMapper extends BaseMapper<UserRole> {
      * @param roleId 角色ID
      * @return 用户ID列表
      */
-    List<Long> selectUserIdsByRoleId(@Param("roleId") Long roleI
+    List<Long> selectUserIdsByRoleId(@Param("roleId") Long roleId);
+}

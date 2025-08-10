@@ -98,3 +98,4 @@ public class User extends BaseEntity {
      */
     @TableField("last_login_ip")
     private String lastLoginIp;
+}

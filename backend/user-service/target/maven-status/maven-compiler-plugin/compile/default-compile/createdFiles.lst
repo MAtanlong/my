@@ -1,0 +1,14 @@
+com\permission\user\service\impl\UserServiceImpl.class
+com\permission\user\dto\UserQueryDTO.class
+com\permission\user\entity\UserRole.class
+com\permission\user\entity\RolePermission.class
+com\permission\user\dto\UserDTO.class
+com\permission\user\UserServiceApplication.class
+com\permission\user\entity\User.class
+com\permission\user\entity\Role.class
+com\permission\user\entity\Permission.class
+com\permission\user\dto\UserCreateDTO.class
+com\permission\user\service\UserService.class
+com\permission\user\mapper\UserMapper.class
+com\permission\user\controller\UserController.class
+com\permission\user\entity\Department.class

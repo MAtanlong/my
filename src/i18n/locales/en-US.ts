@@ -34,7 +34,8 @@ export default {
     normal: 'Normal',
     cancelled: 'Cancelled',
     featureInDevelopment: 'Feature under development',
-    logout: 'Logout'
+    logout: 'Logout',
+    allRightsReserved: 'All Rights Reserved'
   },
 
   // Navigation Menu

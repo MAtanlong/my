@@ -24,22 +24,32 @@
 
 ### 1. 启动服务
 
-**Windows 用户：**
+**🚀 推荐方式 - 一键启动（自动配置Nacos）：**
 ```bash
-# 双击运行或在命令行执行
+# Windows 用户 - 一键启动并自动配置
+docker-start-auto.bat
+
+# 或使用增强版启动脚本
 docker-start.bat
 ```
 
-**Linux/macOS 用户：**
+**📋 传统方式：**
 ```bash
-# 赋予执行权限
-chmod +x docker-start.sh
+# Windows 用户
+docker-start.bat
 
-# 启动服务
+# Linux/macOS 用户
+chmod +x docker-start.sh
 ./docker-start.sh
 
 # 或直接使用 docker-compose
 docker-compose up -d
+```
+
+**🔧 手动配置Nacos（如需要）：**
+```bash
+# 如果自动配置失败，可手动运行
+powershell -ExecutionPolicy Bypass -File "auto-config-nacos.ps1"
 ```
 
 ### 2. 验证服务状态
@@ -135,6 +145,53 @@ docker exec -it permission-redis redis-cli
 **数据持久化：**
 - 数据卷：`nacos_data`, `nacos_logs`
 - 数据库：使用 MySQL 存储配置信息
+
+## 🤖 自动配置功能
+
+### Nacos 自动配置
+
+系统提供了自动配置Nacos的功能，在Docker服务启动后会自动：
+
+1. **等待Nacos服务就绪** - 智能检测Nacos是否完全启动
+2. **清理旧配置** - 删除可能存在的旧配置文件
+3. **创建微服务配置** - 自动创建所有微服务的配置文件
+4. **验证配置结果** - 确保所有配置都成功创建
+
+**自动创建的配置文件：**
+- `gateway-service.yml` - 网关服务配置
+- `user-service.yml` - 用户服务配置
+- `auth-service.yml` - 认证服务配置
+- `menu-service.yml` - 菜单服务配置
+- `system-service.yml` - 系统服务配置
+
+**配置特点：**
+- 🔗 **服务发现**: 自动配置Nacos服务注册与发现
+- 🗄️ **数据库连接**: 使用Docker内部网络连接MySQL
+- 📦 **Redis缓存**: 为每个服务分配独立的Redis数据库
+- 🌐 **网关路由**: 自动配置API网关路由规则
+- 🔒 **CORS支持**: 配置跨域访问支持
+
+### 配置脚本说明
+
+| 脚本文件 | 功能描述 |
+|----------|----------|
+| `auto-config-nacos.ps1` | 主配置脚本，包含完整的自动配置逻辑 |
+| `docker-start.bat` | 增强版启动脚本，包含自动配置功能 |
+| `docker-start-auto.bat` | 简化版一键启动脚本 |
+| `fix-nacos-config.ps1` | 传统配置脚本（仅网关配置） |
+| `create-other-configs.ps1` | 传统配置脚本（其他服务配置） |
+
+### 故障排除
+
+**如果自动配置失败：**
+1. 检查Nacos服务是否正常启动：`docker-compose logs nacos`
+2. 手动运行配置脚本：`powershell -ExecutionPolicy Bypass -File "auto-config-nacos.ps1"`
+3. 访问Nacos控制台检查配置：http://localhost:8848/nacos
+
+**常见问题：**
+- **Nacos未就绪**: 脚本会自动等待最多5分钟，如果仍未就绪请检查Docker资源
+- **网络连接问题**: 确保Docker网络正常，重启Docker Desktop
+- **权限问题**: 确保PowerShell执行策略允许运行脚本
 
 ## 🔧 配置说明
 

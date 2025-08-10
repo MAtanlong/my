@@ -39,6 +39,12 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         
+        <!-- OpenFeign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        
         <!-- MySQL -->
         <dependency>
             <groupId>mysql</groupId>
@@ -70,11 +76,11 @@
             <version>1.0.0</version>
         </dependency>
         
-        <!-- Swagger -->
-        <dependency>
+        <!-- Swagger - 暂时禁用 -->
+        <!-- <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-        </dependency>
+        </dependency> -->
         
         <!-- Lombok -->
         <dependency>

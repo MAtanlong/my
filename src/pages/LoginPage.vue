@@ -153,6 +153,7 @@ import {
   Message,
   ChatDotRound
 } from '@element-plus/icons-vue'
+import { authApi } from '../api/auth'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -179,7 +180,7 @@ const phoneFormRef = ref<FormInstance>()
 // 用户名登录表单
 const usernameForm = reactive({
   username: 'admin',
-  password: 'admin123',
+  password: '123456',
   captcha: ''
 })
 
@@ -246,19 +247,26 @@ const sendSmsCode = async () => {
   }
   
   try {
-    // 模拟发送短信验证码
-    ElMessage.success(t('login.messages.smsCodeSent'))
+    // 调用发送短信验证码API
+    const response = await authApi.sendSmsCode(phoneForm.phone)
     
-    // 开始倒计时
-    smsCountdown.value = 60
-    const timer = setInterval(() => {
-      smsCountdown.value--
-      if (smsCountdown.value <= 0) {
-        clearInterval(timer)
-      }
-    }, 1000)
-  } catch (error) {
-    ElMessage.error(t('login.messages.smsCodeSendFailed'))
+    if (response.code === 200) {
+      ElMessage.success(t('login.messages.smsCodeSent'))
+      
+      // 开始倒计时
+      smsCountdown.value = 60
+      const timer = setInterval(() => {
+        smsCountdown.value--
+        if (smsCountdown.value <= 0) {
+          clearInterval(timer)
+        }
+      }, 1000)
+    } else {
+      ElMessage.error(response.message || t('login.messages.smsCodeSendFailed'))
+    }
+  } catch (error: any) {
+    console.error('发送短信验证码失败:', error)
+    ElMessage.error(error.message || t('login.messages.smsCodeSendFailed'))
   }
 }
 
@@ -283,42 +291,47 @@ const handleLogin = async () => {
       }
     }
     
-    // 模拟登录请求
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    // 准备登录数据
+    const loginData = {
+      loginType: loginType.value,
+      ...(loginType.value === 'username' ? {
+        username: usernameForm.username,
+        password: usernameForm.password,
+        captcha: usernameForm.captcha
+      } : {
+        phone: phoneForm.phone,
+        smsCode: phoneForm.smsCode
+      })
+    }
     
-    // 模拟登录成功响应数据
-    const mockUserData = {
-      token: 'mock-jwt-token-' + Date.now(),
-      refreshToken: 'mock-refresh-token-' + Date.now(),
-      userInfo: {
-        id: 'admin001',
-        username: loginType.value === 'username' ? usernameForm.username : phoneForm.phone,
-        realName: '系统管理员',
-        email: 'admin@example.com',
-        avatar: '',
-        roles: ['SUPER_ADMIN'],
-        permissions: ['*:*:*']
+    // 调用登录API
+    const response = await authApi.login(loginData)
+    
+    if (response.code === 200) {
+      // 保存token和用户信息
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('refreshToken', response.data.refreshToken)
+      localStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
+      
+      // 保存登录状态
+      if (rememberMe.value) {
+        localStorage.setItem('rememberMe', 'true')
       }
+      
+      // 登录成功
+      ElMessage.success(t('login.messages.loginSuccess'))
+      
+      // 跳转到首页
+      router.push('/dashboard')
+    } else {
+      ElMessage.error(response.message || '登录失败')
+      refreshCaptcha()
     }
     
-    // 保存token和用户信息
-    localStorage.setItem('token', mockUserData.token)
-    localStorage.setItem('refreshToken', mockUserData.refreshToken)
-    localStorage.setItem('userInfo', JSON.stringify(mockUserData.userInfo))
-    
-    // 保存登录状态
-    if (rememberMe.value) {
-      localStorage.setItem('rememberMe', 'true')
-    }
-    
-    // 登录成功
-    ElMessage.success(t('login.messages.loginSuccess'))
-    
-    // 跳转到首页
-    router.push('/dashboard')
-    
-  } catch (error) {
+  } catch (error: any) {
     console.error('登录失败:', error)
+    ElMessage.error(error.message || '登录失败，请稍后重试')
+    refreshCaptcha()
   } finally {
     loginLoading.value = false
   }

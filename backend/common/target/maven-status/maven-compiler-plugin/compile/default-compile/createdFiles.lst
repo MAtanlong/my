@@ -1,0 +1,17 @@
+com\permission\common\config\SecurityConfig.class
+com\permission\common\util\RedisUtil.class
+com\permission\common\exception\GlobalExceptionHandler.class
+com\permission\common\result\ResultCode.class
+com\permission\common\result\Result.class
+com\permission\common\query\PageQuery.class
+com\permission\common\result\PageResult.class
+com\permission\common\utils\SecurityUtils.class
+com\permission\common\config\MyBatisPlusConfig.class
+com\permission\common\security\JwtAuthenticationEntryPoint.class
+com\permission\common\config\RedisConfig.class
+com\permission\common\exception\BusinessException.class
+com\permission\common\entity\BaseEntity.class
+com\permission\common\security\JwtAuthenticationFilter.class
+com\permission\common\security\UserPrincipal.class
+com\permission\common\utils\JwtUtils.class
+com\permission\common\config\SwaggerConfig.class

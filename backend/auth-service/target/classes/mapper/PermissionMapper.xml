@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.permission.auth.mapper.PermissionMapper">
+    
+    <!-- 权限DTO结果映射 -->
+    <resultMap id="PermissionDTOMap" type="com.permission.auth.dto.PermissionDTO">
+        <id column="id" property="id"/>
+        <result column="permission_name" property="permissionName"/>
+        <result column="permission_code" property="permissionCode"/>
+        <result column="type" property="type"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="path" property="path"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="sort" property="sort"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+    
+    <!-- 查询所有权限（树形结构） -->
+    <select id="selectPermissionTree" resultMap="PermissionDTOMap">
+        SELECT 
+            p.id,
+            p.permission_name,
+            p.permission_code,
+            p.type,
+            p.parent_id,
+            p.path,
+            p.description,
+            p.status,
+            p.sort,
+            p.created_at,
+            p.updated_at
+        FROM sys_permission p
+        WHERE p.status = 1
+        ORDER BY p.sort ASC, p.created_at ASC
+    </select>
+    
+    <!-- 根据权限编码查询权限 -->
+    <select id="selectByPermissionCode" resultType="com.permission.auth.entity.Permission">
+        SELECT * FROM sys_permission WHERE permission_code = #{permissionCode}
+    </select>
+    
+    <!-- 根据角色ID查询权限列表 -->
+    <select id="selectPermissionsByRoleId" resultMap="PermissionDTOMap">
+        SELECT 
+            p.id,
+            p.permission_name,
+            p.permission_code,
+            p.type,
+            p.parent_id,
+            p.path,
+            p.description,
+            p.status,
+            p.sort,
+            p.created_at,
+            p.updated_at
+        FROM sys_permission p
+        INNER JOIN sys_role_permission rp ON p.id = rp.permission_id
+        WHERE rp.role_id = #{roleId}
+        AND p.status = 1
+        ORDER BY p.sort ASC, p.created_at ASC
+    </select>
+    
+    <!-- 根据用户ID查询权限列表 -->
+    <select id="selectPermissionsByUserId" resultMap="PermissionDTOMap">
+        SELECT DISTINCT
+            p.id,
+            p.permission_name,
+            p.permission_code,
+            p.type,
+            p.parent_id,
+            p.path,
+            p.description,
+            p.status,
+            p.sort,
+            p.created_at,
+            p.updated_at
+        FROM sys_permission p
+        INNER JOIN sys_role_permission rp ON p.id = rp.permission_id
+        INNER JOIN sys_user_role ur ON rp.role_id = ur.role_id
+        INNER JOIN sys_role r ON ur.role_id = r.id
+        WHERE ur.user_id = #{userId}
+        AND p.status = 1
+        AND r.status = 1
+        ORDER BY p.sort ASC, p.created_at ASC
+    </select>
+    
+    <!-- 根据父级ID查询子权限列表 -->
+    <select id="selectPermissionsByParentId" resultMap="PermissionDTOMap">
+        SELECT 
+            p.id,
+            p.permission_name,
+            p.permission_code,
+            p.type,
+            p.parent_id,
+            p.path,
+            p.description,
+            p.status,
+            p.sort,
+            p.created_at,
+            p.updated_at
+        FROM sys_permission p
+        WHERE p.parent_id = #{parentId}
+        AND p.status = 1
+        ORDER BY p.sort ASC, p.created_at ASC
+    </select>
+    
+    <!-- 查询所有启用的权限 -->
+    <select id="selectEnabledPermissions" resultMap="PermissionDTOMap">
+        SELECT 
+            p.id,
+            p.permission_name,
+            p.permission_code,
+            p.type,
+            p.parent_id,
+            p.path,
+            p.description,
+            p.status,
+            p.sort,
+            p.created_at,
+            p.updated_at
+        FROM sys_permission p
+        WHERE p.status = 1
+        ORDER BY p.sort ASC, p.created_at ASC
+    </select>
+    
+</mapper>

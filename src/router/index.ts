@@ -158,7 +158,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   
-  if (to.meta.requiresAuth && !token) {
+  // 检查路由是否需要认证（包括父路由的认证要求）
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth !== false)
+  
+  if (requiresAuth && !token) {
     // 需要登录但没有token，跳转到登录页
     next('/login')
   } else if (to.path === '/login' && token) {

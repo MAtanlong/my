@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 字典类型服务实现类
@@ -38,8 +39,16 @@ public class DictTypeServiceImpl implements DictTypeService {
     private final DictDataService dictDataService;
     
     @Override
-    public IPage<DictTypeDTO> getDictTypePage(Integer page, Integer size, String keyword) {
-        Page<DictTypeDTO> pageParam = new Page<>(page, size);
+    public List<DictTypeDTO> getDictTypeList() {
+        List<DictType> dictTypes = dictTypeMapper.selectList(null);
+        return dictTypes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public IPage<DictTypeDTO> getDictTypePage(Long page, Long size, String keyword) {
+        Page<DictType> pageParam = new Page<>(page, size);
         
         LambdaQueryWrapper<DictType> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(keyword)) {
@@ -55,7 +64,7 @@ public class DictTypeServiceImpl implements DictTypeService {
         IPage<DictTypeDTO> result = new Page<>(page, size, dictTypePage.getTotal());
         List<DictTypeDTO> dtoList = dictTypePage.getRecords().stream()
                 .map(this::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
         result.setRecords(dtoList);
         
         return result;
@@ -63,13 +72,16 @@ public class DictTypeServiceImpl implements DictTypeService {
     
     @Override
     public List<DictTypeDTO> getDictTypeListWithData() {
-        return dictTypeMapper.selectDictTypeListWithData();
+        List<DictType> dictTypes = dictTypeMapper.selectList(null);
+        return dictTypes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
     
     @Override
     public DictTypeDTO getDictTypeById(Long dictTypeId) {
         if (dictTypeId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型ID不能为空");
         }
         
         DictType dictType = dictTypeMapper.selectById(dictTypeId);
@@ -88,7 +100,7 @@ public class DictTypeServiceImpl implements DictTypeService {
     @Cacheable(value = "system:dict:type", key = "#dictType")
     public DictTypeDTO getDictTypeByType(String dictType) {
         if (!StringUtils.hasText(dictType)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型不能为空");
         }
         
         return dictTypeMapper.selectDictTypeByType(dictType);
@@ -119,7 +131,7 @@ public class DictTypeServiceImpl implements DictTypeService {
     @CacheEvict(value = {"system:dict:type", "system:dict:enabled"}, allEntries = true)
     public Boolean updateDictType(Long dictTypeId, DictTypeDTO dictTypeDTO) {
         if (dictTypeId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型ID不能为空");
         }
         
         // 检查字典类型是否存在
@@ -147,7 +159,7 @@ public class DictTypeServiceImpl implements DictTypeService {
     @CacheEvict(value = {"system:dict:type", "system:dict:enabled"}, allEntries = true)
     public Boolean deleteDictType(Long dictTypeId) {
         if (dictTypeId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型ID不能为空");
         }
         
         // 检查字典类型是否存在
@@ -168,7 +180,7 @@ public class DictTypeServiceImpl implements DictTypeService {
     @CacheEvict(value = {"system:dict:type", "system:dict:enabled"}, allEntries = true)
     public Boolean deleteDictTypes(List<Long> dictTypeIds) {
         if (CollectionUtils.isEmpty(dictTypeIds)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型ID列表不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型ID列表不能为空");
         }
         
         // 获取字典类型列表
@@ -190,11 +202,11 @@ public class DictTypeServiceImpl implements DictTypeService {
     @CacheEvict(value = {"system:dict:type", "system:dict:enabled"}, allEntries = true)
     public Boolean changeDictTypeStatus(Long dictTypeId, Integer status) {
         if (dictTypeId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "字典类型ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "字典类型ID不能为空");
         }
         
         if (status == null || (status != 0 && status != 1)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "状态值无效");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "状态值无效");
         }
         
         // 检查字典类型是否存在
@@ -231,9 +243,9 @@ public class DictTypeServiceImpl implements DictTypeService {
     }
     
     @Override
-    @CacheEvict(value = {"system:dict:type", "system:dict:enabled"}, allEntries = true)
-    public void refreshDictTypeCache() {
-        log.info("字典类型缓存已刷新");
+    @CacheEvict(value = {"system:dict", "system:dict:type", "system:dict:data"}, allEntries = true)
+    public void refreshDictCache() {
+        log.info("字典缓存已刷新");
     }
     
     /**

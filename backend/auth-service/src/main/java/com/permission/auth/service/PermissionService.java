@@ -100,4 +100,5 @@ public interface PermissionService {
      * @param excludeId      排除的权限ID
      * @return 是否存在
      */
-    Boolean existsPermissionCode(String permissionCode,
+    Boolean existsPermissionCode(String permissionCode, String excludeId);
+}

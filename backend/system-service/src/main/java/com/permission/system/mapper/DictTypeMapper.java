@@ -38,3 +38,4 @@ public interface DictTypeMapper extends BaseMapper<DictType> {
      * @return 字典类型列表
      */
     List<DictTypeDTO> selectEnabledDictTypes();
+}

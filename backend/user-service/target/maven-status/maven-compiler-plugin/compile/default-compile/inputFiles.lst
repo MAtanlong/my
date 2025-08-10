@@ -1,0 +1,14 @@
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\dto\UserCreateDTO.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\UserRole.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\dto\UserQueryDTO.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\controller\UserController.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\Department.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\service\UserService.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\Permission.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\UserServiceApplication.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\dto\UserDTO.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\Role.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\RolePermission.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\entity\User.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\service\impl\UserServiceImpl.java
+E:\个人\my\my\backend\user-service\src\main\java\com\permission\user\mapper\UserMapper.java

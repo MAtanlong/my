@@ -50,4 +50,55 @@ public class SystemConfigCreateDTO {
     /**
      * 备注
      */
-    @Size(max = 200, message = "备注长度不能超过200个字
+    @Size(max = 500, message = "备注长度不能超过500个字符")
+    private String remark;
+    
+    // Getter and Setter methods
+    public String getConfigName() {
+        return configName;
+    }
+    
+    public void setConfigName(String configName) {
+        this.configName = configName;
+    }
+    
+    public String getConfigKey() {
+        return configKey;
+    }
+    
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
+    }
+    
+    public String getConfigValue() {
+        return configValue;
+    }
+    
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue;
+    }
+    
+    public Integer getConfigType() {
+        return configType;
+    }
+    
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
+    }
+    
+    public Integer getStatus() {
+        return status;
+    }
+    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    public String getRemark() {
+        return remark;
+    }
+    
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+}

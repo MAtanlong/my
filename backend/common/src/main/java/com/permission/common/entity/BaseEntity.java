@@ -60,3 +60,4 @@ public class BaseEntity implements Serializable {
     @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer deleted;
+}

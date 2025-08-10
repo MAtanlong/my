@@ -45,7 +45,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @Override
     public SystemConfigDTO getConfigById(Long configId) {
         if (configId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置ID不能为空");
         }
         
         SystemConfig config = systemConfigMapper.selectById(configId);
@@ -63,7 +63,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @Cacheable(value = "system:config", key = "#configKey")
     public SystemConfigDTO getConfigByKey(String configKey) {
         if (configKey == null || configKey.trim().isEmpty()) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置键名不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置键名不能为空");
         }
         
         return systemConfigMapper.selectConfigByKey(configKey);
@@ -101,7 +101,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @CacheEvict(value = {"system:config", "system:config:value"}, allEntries = true)
     public Boolean updateConfig(Long configId, SystemConfigCreateDTO createDTO) {
         if (configId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置ID不能为空");
         }
         
         // 检查配置是否存在
@@ -129,7 +129,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @CacheEvict(value = {"system:config", "system:config:value"}, allEntries = true)
     public Boolean deleteConfig(Long configId) {
         if (configId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置ID不能为空");
         }
         
         // 检查配置是否存在
@@ -140,7 +140,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         
         // 检查是否为系统内置配置
         if (config.getConfigType() != null && config.getConfigType() == 1) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "系统内置配置不能删除");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "系统内置配置不能删除");
         }
         
         return systemConfigMapper.deleteById(configId) > 0;
@@ -151,7 +151,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @CacheEvict(value = {"system:config", "system:config:value"}, allEntries = true)
     public Boolean deleteConfigs(List<Long> configIds) {
         if (CollectionUtils.isEmpty(configIds)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置ID列表不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置ID列表不能为空");
         }
         
         // 检查是否包含系统内置配置
@@ -161,7 +161,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         
         Long systemConfigCount = systemConfigMapper.selectCount(wrapper);
         if (systemConfigCount > 0) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "不能删除系统内置配置");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "不能删除系统内置配置");
         }
         
         return systemConfigMapper.deleteBatchIds(configIds) > 0;
@@ -171,11 +171,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @CacheEvict(value = {"system:config", "system:config:value"}, allEntries = true)
     public Boolean changeConfigStatus(Long configId, Integer status) {
         if (configId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置ID不能为空");
         }
         
         if (status == null || (status != 0 && status != 1)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "状态值无效");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "状态值无效");
         }
         
         // 检查配置是否存在
@@ -199,7 +199,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @Override
     public List<SystemConfigDTO> getConfigsByType(Integer configType) {
         if (configType == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "配置类型不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "配置类型不能为空");
         }
         
         return systemConfigMapper.selectConfigsByType(configType);

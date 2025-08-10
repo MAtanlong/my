@@ -1,5 +1,6 @@
 package com.permission.common.config;
 
+/*
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -9,18 +10,20 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+*/
 
 /**
- * Swagger配置
+ * Swagger配置 - 暂时禁用
  *
  * @author system
  * @since 2024-01-01
  */
-@Configuration
+// @Configuration
 public class SwaggerConfig {
     
     private static final String SECURITY_SCHEME_NAME = "BearerAuth";
     
+    /*
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -37,10 +40,13 @@ public class SwaggerConfig {
                         )
                 );
     }
+    */
     
+    /*
     /**
      * API信息
      */
+    /*
     private Info apiInfo() {
         return new Info()
                 .title("权限管理系统API文档")
@@ -56,5 +62,6 @@ public class SwaggerConfig {
                         .url("https://www.apache.org/licenses/LICENSE-2.0")
                 );
     }
+    */
     
 }

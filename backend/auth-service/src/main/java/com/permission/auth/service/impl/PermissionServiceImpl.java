@@ -44,7 +44,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public PermissionDTO getPermissionById(Long permissionId) {
         if (permissionId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "权限ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "权限ID不能为空");
         }
         
         Permission permission = permissionMapper.selectById(permissionId);
@@ -92,7 +92,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean updatePermission(Long permissionId, PermissionCreateDTO createDTO) {
         if (permissionId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "权限ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "权限ID不能为空");
         }
         
         // 检查权限是否存在
@@ -102,14 +102,14 @@ public class PermissionServiceImpl implements PermissionService {
         }
         
         // 检查权限编码是否已存在（排除当前权限）
-        if (existsPermissionCode(createDTO.getPermissionCode(), permissionId)) {
+        if (existsPermissionCode(createDTO.getPermissionCode(), permissionId.toString())) {
             throw new BusinessException(ResultCode.PERMISSION_CODE_EXISTS);
         }
         
         // 如果有父级权限，检查父级权限是否存在且不能是自己
         if (createDTO.getParentId() != null && createDTO.getParentId() > 0) {
             if (createDTO.getParentId().equals(permissionId)) {
-                throw new BusinessException(ResultCode.PARAM_ERROR, "父级权限不能是自己");
+                throw new BusinessException(ResultCode.VALIDATE_FAILED, "父级权限不能是自己");
             }
             Permission parentPermission = permissionMapper.selectById(createDTO.getParentId());
             if (parentPermission == null) {
@@ -133,7 +133,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean deletePermission(Long permissionId) {
         if (permissionId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "权限ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "权限ID不能为空");
         }
         
         // 检查权限是否存在
@@ -161,11 +161,11 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Boolean changePermissionStatus(Long permissionId, Integer status) {
         if (permissionId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "权限ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "权限ID不能为空");
         }
         
         if (status == null || (status != 0 && status != 1)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "状态值无效");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "状态值无效");
         }
         
         // 检查权限是否存在
@@ -183,7 +183,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<PermissionDTO> getPermissionsByRoleId(Long roleId) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         return permissionMapper.selectPermissionsByRoleId(roleId);
@@ -192,7 +192,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<PermissionDTO> getPermissionsByUserId(Long userId) {
         if (userId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "用户ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "用户ID不能为空");
         }
         
         return permissionMapper.selectPermissionsByUserId(userId);
@@ -213,15 +213,15 @@ public class PermissionServiceImpl implements PermissionService {
     }
     
     @Override
-    public Boolean existsPermissionCode(String permissionCode, Long excludeId) {
+    public Boolean existsPermissionCode(String permissionCode, String excludeId) {
         if (permissionCode == null || permissionCode.trim().isEmpty()) {
             return false;
         }
         
         LambdaQueryWrapper<Permission> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Permission::getPermissionCode, permissionCode);
-        if (excludeId != null) {
-            wrapper.ne(Permission::getId, excludeId);
+        if (excludeId != null && !excludeId.trim().isEmpty()) {
+            wrapper.ne(Permission::getId, Long.valueOf(excludeId));
         }
         
         return permissionMapper.selectCount(wrapper) > 0;

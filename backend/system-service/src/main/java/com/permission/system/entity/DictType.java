@@ -41,4 +41,36 @@ public class DictType extends BaseEntity {
     @TableField("remark")
     private String remark;
     
+    // Getter and Setter methods
+    public String getDictName() {
+        return dictName;
+    }
+    
+    public void setDictName(String dictName) {
+        this.dictName = dictName;
+    }
+    
+    public String getDictType() {
+        return dictType;
+    }
+    
+    public void setDictType(String dictType) {
+        this.dictType = dictType;
+    }
+    
+    public Integer getStatus() {
+        return status;
+    }
+    
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    
+    public String getRemark() {
+        return remark;
+    }
+    
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }

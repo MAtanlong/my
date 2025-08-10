@@ -35,13 +35,13 @@ docker-compose pull
 echo ✅ 镜像拉取完成
 
 :: 启动服务
-echo [5/5] 启动服务...
+echo [5/6] 启动服务...
 docker-compose up -d
 
 if %errorlevel% equ 0 (
     echo.
     echo ========================================
-    echo ✅ 所有服务启动成功！
+    echo ✅ Docker服务启动成功！
     echo ========================================
     echo.
     echo 📋 服务信息：
@@ -53,10 +53,45 @@ if %errorlevel% equ 0 (
     echo   MySQL:    root/123456
     echo   Nacos:    nacos/nacos
     echo.
-    echo 📊 查看服务状态：docker-compose ps
-    echo 📝 查看服务日志：docker-compose logs -f [服务名]
-    echo 🛑 停止所有服务：docker-stop.bat
+    
+    :: 自动配置Nacos
+    echo [6/6] 自动配置Nacos...
+    echo 正在等待Nacos服务完全启动并配置微服务配置文件...
     echo.
+    
+    :: 检查PowerShell配置脚本是否存在
+    if exist "auto-config-nacos.ps1" (
+        :: 使用PowerShell执行配置脚本
+        powershell -ExecutionPolicy Bypass -File "auto-config-nacos.ps1"
+        
+        if %errorlevel% equ 0 (
+            echo.
+            echo ========================================
+            echo 🎉 环境启动和配置完成！
+            echo ========================================
+            echo.
+            echo 📊 查看服务状态：docker-compose ps
+            echo 📝 查看服务日志：docker-compose logs -f [服务名]
+            echo 🌐 访问Nacos控制台：http://localhost:8848/nacos
+            echo 🛑 停止所有服务：docker-stop.bat
+            echo.
+        ) else (
+            echo.
+            echo ⚠️ Nacos配置失败，但Docker服务已启动
+            echo 您可以手动运行以下命令配置Nacos：
+            echo   powershell -ExecutionPolicy Bypass -File "auto-config-nacos.ps1"
+            echo.
+        )
+    ) else (
+        echo ⚠️ 未找到auto-config-nacos.ps1配置脚本
+        echo 请手动配置Nacos或运行fix-nacos-config.ps1
+        echo.
+        echo 📊 查看服务状态：docker-compose ps
+        echo 📝 查看服务日志：docker-compose logs -f [服务名]
+        echo 🌐 访问Nacos控制台：http://localhost:8848/nacos
+        echo 🛑 停止所有服务：docker-stop.bat
+        echo.
+    )
 ) else (
     echo ❌ 服务启动失败，请检查错误信息
     docker-compose logs

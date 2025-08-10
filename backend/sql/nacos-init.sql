@@ -152,6 +152,36 @@ CREATE TABLE `permissions` (
     UNIQUE INDEX `uk_role_permission` (`role`,`resource`,`action`) USING BTREE
 );
 
+-- 配置标签关系表
+CREATE TABLE `config_tags_relation` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `tag_name` varchar(128) NOT NULL COMMENT 'tag_name',
+  `tag_type` varchar(64) DEFAULT NULL COMMENT 'tag_type',
+  `data_id` varchar(255) NOT NULL COMMENT 'data_id',
+  `group_id` varchar(128) NOT NULL COMMENT 'group_id',
+  `tenant_id` varchar(128) DEFAULT '' COMMENT 'tenant_id',
+  `nid` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`nid`),
+  UNIQUE KEY `uk_configtagrelation_configidtag` (`id`,`tag_name`,`tag_type`),
+  KEY `idx_tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_tag_relation';
+
+-- 组容量信息表
+CREATE TABLE `group_capacity` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `group_id` varchar(128) NOT NULL DEFAULT '' COMMENT 'Group ID，空字符表示整个集群',
+  `quota` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '配额，0表示使用默认值',
+  `usage` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '使用量',
+  `max_size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '单个配置大小上限，单位为字节，0表示使用默认值',
+  `max_aggr_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '聚合子配置最大个数',
+  `max_aggr_size` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值',
+  `max_history_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最大变更历史数量',
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='集群、各Group容量信息表';
+
 -- 插入默认用户
 INSERT INTO users (username, password, enabled) VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', TRUE);
 

@@ -62,4 +62,5 @@ public class RoleDTO {
     /**
      * 更新时间
      */
-    private Local
+    private LocalDateTime updatedAt;
+}

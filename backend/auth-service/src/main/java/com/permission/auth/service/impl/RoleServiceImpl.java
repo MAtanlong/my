@@ -44,13 +44,13 @@ public class RoleServiceImpl implements RoleService {
     public PageResult<RoleDTO> getRolePage(RoleQueryDTO query) {
         Page<RoleDTO> page = new Page<>(query.getCurrent(), query.getSize());
         IPage<RoleDTO> result = roleMapper.selectRolePage(page, query);
-        return PageResult.of(result.getRecords(), result.getTotal(), result.getCurrent(), result.getSize());
+        return PageResult.of(result.getCurrent(), result.getSize(), result.getTotal(), result.getRecords());
     }
     
     @Override
     public RoleDTO getRoleById(Long roleId) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         RoleDTO roleDTO = roleMapper.selectRoleById(roleId);
@@ -93,7 +93,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateRole(Long roleId, RoleCreateDTO createDTO) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         // 检查角色是否存在
@@ -128,7 +128,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteRole(Long roleId) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         // 检查角色是否存在
@@ -156,7 +156,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean batchDeleteRoles(List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID列表不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID列表不能为空");
         }
         
         for (Long roleId : roleIds) {
@@ -169,11 +169,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Boolean changeRoleStatus(Long roleId, Integer status) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         if (status == null || (status != 0 && status != 1)) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "状态值无效");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "状态值无效");
         }
         
         // 检查角色是否存在
@@ -192,7 +192,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean assignPermissions(Long roleId, List<Long> permissionIds) {
         if (roleId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "角色ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "角色ID不能为空");
         }
         
         // 删除原有权限关联
@@ -220,7 +220,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleDTO> getRolesByUserId(Long userId) {
         if (userId == null) {
-            throw new BusinessException(ResultCode.PARAM_ERROR, "用户ID不能为空");
+            throw new BusinessException(ResultCode.VALIDATE_FAILED, "用户ID不能为空");
         }
         
         return roleMapper.selectRolesByUserId(userId);
